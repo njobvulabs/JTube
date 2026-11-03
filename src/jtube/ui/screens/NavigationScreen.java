@@ -131,7 +131,7 @@ public abstract class NavigationScreen extends AbstractListScreen implements Tex
 	private static void init() {
 		if(init) return;
 		init = true;
-		topBar = ui.getCanvas().hasPointerEvents();
+		topBar = ui.getCanvas().hasPointerEvents() && !PlatformUtils.isKeypadOnly();
 		try {
 			if(topBar) {
 				loadImages();
@@ -388,6 +388,10 @@ public abstract class NavigationScreen extends AbstractListScreen implements Tex
 				int y2 = yy;
 				if(itemOptions != null) {
 					for(int i = 0; i < itemOptions.length; i++) {
+						if(menuSelection == i) {
+							g.setColor(AppUI.getColor(COLOR_ITEM_HIGHLIGHT));
+							g.fillRect(xx + 1, yy, menuW - 2, 8 + mediumfontheight);
+						}
 						g.setColor(AppUI.getColor(COLOR_ITEMBORDER));
 						g.drawLine(xx+4, yy, xx+menuW-8, yy);
 						g.setColor(AppUI.getColor(COLOR_MAINFG));
@@ -396,6 +400,10 @@ public abstract class NavigationScreen extends AbstractListScreen implements Tex
 					}
 				}
 				for(int i = 0; i < menuOptions.length; i++) {
+					if(menuSelection == (itemOptions == null ? i : i + itemOptions.length)) {
+						g.setColor(AppUI.getColor(COLOR_ITEM_HIGHLIGHT));
+						g.fillRect(xx + 1, yy, menuW - 2, 8 + mediumfontheight);
+					}
 					g.setColor(AppUI.getColor(COLOR_ITEMBORDER));
 					g.drawLine(xx+4, yy, xx+menuW-8, yy);
 					g.setColor(AppUI.getColor(COLOR_MAINFG));
@@ -443,19 +451,21 @@ public abstract class NavigationScreen extends AbstractListScreen implements Tex
 					int y2 = yy;
 					if(itemOptions != null) {
 						for(int i = 0; i < itemOptions.length; i++) {
-							g.setColor(AppUI.getColor(COLOR_MAINFG));
 							if(menuSelection == i) {
-								g.fillRect(xx, yy, 2, ih);
+								g.setColor(AppUI.getColor(COLOR_ITEM_HIGHLIGHT));
+								g.fillRect(xx + 1, yy, menuW - 2, ih);
 							}
+							g.setColor(AppUI.getColor(COLOR_MAINFG));
 							g.drawString(itemOptions[i], xx + 4, yy+4, 0);
 							yy += ih;
 						}
 					}
 					for(int i = 0; i < menuOptions.length; i++) {
-						g.setColor(AppUI.getColor(COLOR_MAINFG));
 						if(itemOptions != null ? menuSelection == i + itemOptions.length: menuSelection == i) {
-							g.fillRect(xx, yy, 2, ih);
+							g.setColor(AppUI.getColor(COLOR_ITEM_HIGHLIGHT));
+							g.fillRect(xx + 1, yy, menuW - 2, ih);
 						}
+						g.setColor(AppUI.getColor(COLOR_MAINFG));
 						g.drawString(menuOptions[i], xx + 4, yy+4, 0);
 						yy += ih;
 					}
@@ -504,19 +514,21 @@ public abstract class NavigationScreen extends AbstractListScreen implements Tex
 				int y2 = yy;
 				if(itemOptions != null) {
 					for(int i = 0; i < itemOptions.length; i++) {
-						g.setColor(AppUI.getColor(COLOR_MAINFG));
 						if(menuSelection == i) {
-							g.fillRect(xx, yy, 2, ih);
+							g.setColor(AppUI.getColor(COLOR_ITEM_HIGHLIGHT));
+							g.fillRect(xx + 1, yy, menuW - 2, ih);
 						}
+						g.setColor(AppUI.getColor(COLOR_MAINFG));
 						g.drawString(itemOptions[i], xx + 4, yy+4, 0);
 						yy += ih;
 					}
 				}
 				for(int i = 0; i < menuOptions.length; i++) {
-					g.setColor(AppUI.getColor(COLOR_MAINFG));
 					if(itemOptions != null ? menuSelection == i + itemOptions.length: menuSelection == i) {
-						g.fillRect(xx, yy, 2, ih);
+						g.setColor(AppUI.getColor(COLOR_ITEM_HIGHLIGHT));
+						g.fillRect(xx + 1, yy, menuW - 2, ih);
 					}
+					g.setColor(AppUI.getColor(COLOR_MAINFG));
 					g.drawString(menuOptions[i], xx + 4, yy+4, 0);
 					yy += ih;
 				}
@@ -715,6 +727,9 @@ public abstract class NavigationScreen extends AbstractListScreen implements Tex
 	
 	protected void keyRepeat(int i) {
 		if(menu) {
+			if(i == -1 || i == -2 || i == Canvas.KEY_NUM2 || i == Canvas.KEY_NUM8) {
+				keyPress(i);
+			}
 			return;
 		}
 		if(keyboard != null && keyboard.isVisible() && keyboard.keyRepeated(i)) {

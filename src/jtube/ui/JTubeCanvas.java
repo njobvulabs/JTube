@@ -57,7 +57,7 @@ public class JTubeCanvas extends GameCanvas implements UIConstants {
 		super.setFullScreenMode(Settings.fullScreen);
 		width = super.getWidth();
 		height = super.getHeight();
-		if(!super.hasPointerEvents()) {
+		if(!super.hasPointerEvents() || PlatformUtils.isKeypadOnly()) {
 			ui.setKeyInputMode();
 		}
 		bb = PlatformUtils.isBlackBerry();
@@ -121,6 +121,7 @@ public class JTubeCanvas extends GameCanvas implements UIConstants {
 	}
 	
 	public void pointerPressed(int x, int y) {
+		if(PlatformUtils.isKeypadOnly()) return;
 		if(keyboard != null && keyboard.pointerPressed(x, y)) return;
 		ui.setTouchInputMode();
 		pressed = true;
@@ -134,6 +135,7 @@ public class JTubeCanvas extends GameCanvas implements UIConstants {
 	}
 	
 	public void pointerReleased(int x, int y) {
+		if(PlatformUtils.isKeypadOnly()) return;
 		if(keyboard != null && keyboard.pointerReleased(x, y)) return;
 		lastX = x;
 		lastY = y;
@@ -167,6 +169,7 @@ public class JTubeCanvas extends GameCanvas implements UIConstants {
 	}
 
 	public void pointerDragged(int x, int y) {
+		if(PlatformUtils.isKeypadOnly()) return;
 		if(keyboard != null && keyboard.pointerDragged(x, y)) return;
 		UIScreen s = ui.current;
 		if(s != null) {

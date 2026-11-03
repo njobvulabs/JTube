@@ -7,12 +7,12 @@ YouTube client based on the Invidious API for Java devices with MIDP 2.0 support
 
 ## Prebuilt package
 
-A patched `2.90.2` build is included in `dist/`:
+A patched `2.90.3` build is included in `dist/`:
 
-- `JTube-2.90.2-t455.jar`
-- `JTube-2.90.2-t455.jad`
+- `JTube-2.90.3-t455.jar`
+- `JTube-2.90.3-t455.jad`
 
-This build targets the Tecno T455 and other MIDP 2.0 / CLDC 1.1 devices. Install both files in the same folder and open the JAD, or install the JAR directly.
+This build targets the Tecno T455 and other MIDP 2.0 / CLDC 1.1 devices. Install both files in the same folder and open the JAD, or install the JAR directly. The Tecno T455 build is maintained by Alfred Njobvu.
 
 Changes in this build:
 
@@ -20,6 +20,8 @@ Changes in this build:
 - API proxy is disabled by default
 - `301`, `302`, `303`, `307`, and `308` redirects are followed
 - Settings migrate to schema `v11`, resetting old dead-instance and proxy defaults
+- Tecno T455 forces keypad-only navigation and ignores touch input
+- Menus highlight the selected row for keypad navigation
 
 The API endpoints were verified over HTTP, but video playback still depends on the device's network speed and codec support.
 

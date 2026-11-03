@@ -248,7 +248,7 @@ public class Settings implements Constants {
 					Settings.watchMethod = 2;
 				}
 			}
-			if (testCanvas.hasPointerEvents()) {
+			if (testCanvas.hasPointerEvents() && !PlatformUtils.isKeypadOnly()) {
 				channelBanner = true;
 				searchSuggestions = true;
 			}

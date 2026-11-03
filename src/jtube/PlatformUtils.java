@@ -316,6 +316,26 @@ public class PlatformUtils {
 	public static boolean isBlackBerry() {
 		return platform.toLowerCase().startsWith("blackberry");
 	}
+
+	public static boolean isTecnoT455() {
+		String p = platform.toLowerCase();
+		if(p.indexOf("t455") != -1 || p.indexOf("tecno") != -1) {
+			return true;
+		}
+		String d = System.getProperty("microedition.device");
+		return d != null && d.toLowerCase().indexOf("t455") != -1;
+	}
+
+	public static boolean isKeypadOnly() {
+		if(isTecnoT455()) {
+			return true;
+		}
+		try {
+			return App.midlet != null && "true".equalsIgnoreCase(App.midlet.getAppProperty("JTube-Keypad-Only"));
+		} catch (Throwable e) {
+			return false;
+		}
+	}
 	
 	public static boolean checkClass(String s) {
 		try {

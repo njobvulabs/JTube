@@ -608,7 +608,8 @@ public class AppUI implements CommandListener, Constants, UIConstants, LocaleCon
 	public void showAbout() {
 		Form t = new Form("About");
 		t.append("JTube v" + App.midlet.getAppProperty("MIDlet-Version") + "\n\n");
-		t.append("By Shinovon (nnp.nnchan.ru)" + "\n"
+		t.append("Tecno T455 keypad build by Alfred Njobvu" + "\n\n");
+		t.append("Original JTube by Shinovon (nnp.nnchan.ru)" + "\n"
 				+ "t.me/nnmidlets\n"
 				+ "vk.com/nnprojectcc\n\n"
 				+ "Special thanks to ales_alte, Jazmin Rocio, Feodor0090, musecat77, curoviyxru"
