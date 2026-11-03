@@ -1,5 +1,5 @@
 Nokia-MIDlet-Background-Event: pause
-MIDlet-Version: 2.90.1
+MIDlet-Version: 2.90.2
 MIDlet-Info-URL: http://nnp.nnchan.ru/jtube
 Nokia-MIDlet-S60-Selection-Key-Compatibility: true
 MicroEdition-Configuration: CLDC-1.1
@@ -14,6 +14,6 @@ MIDletIntegration-ID: jtube
 MIDlet-Icon: /icon.png
 MIDlet-1: JTube,/icon.png,cc.nnproject.ytapp.App2
 MicroEdition-Profile: MIDP-2.0
-MIDlet-Jar-URL: JTube.jar
+MIDlet-Jar-URL: JTube-2.90.2-t455.jar
 MIDlet-Permissions: javax.microedition.io.Connector.http,javax.microedition.io.Connector.file.write,javax.microedition.io.Connector.file.read,javax.microedition.io.PushRegistry
 Nokia-Scalable-Icon-MIDlet-1: /icon.svg

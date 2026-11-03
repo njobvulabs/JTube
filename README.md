@@ -1,9 +1,27 @@
 # JTube
 <h3>Discontinued!</h3>
 
-Youtube client based on Invidious API for Java devices with MIDP 2.0 support
+YouTube client based on the Invidious API for Java devices with MIDP 2.0 support.
 
 <a href="FAQ.md">FAQ</a><br>
+
+## Prebuilt package
+
+A patched `2.90.2` build is included in `dist/`:
+
+- `JTube-2.90.2-t455.jar`
+- `JTube-2.90.2-t455.jad`
+
+This build targets the Tecno T455 and other MIDP 2.0 / CLDC 1.1 devices. Install both files in the same folder and open the JAD, or install the JAR directly.
+
+Changes in this build:
+
+- Default Invidious instance is `http://s60tube.io.vn/`
+- API proxy is disabled by default
+- `301`, `302`, `303`, `307`, and `308` redirects are followed
+- Settings migrate to schema `v11`, resetting old dead-instance and proxy defaults
+
+The API endpoints were verified over HTTP, but video playback still depends on the device's network speed and codec support.
 
 ## Running JTube from other MIDlets
 <a href="https://github.com/shinovon/MIDletIntegrationLibrary">MIDletIntegration library</a><br>
@@ -25,31 +43,40 @@ try {
 
 ## Building
 
+### Requirements
+
+- Any J2ME SDK (for example WTK, S40 5th, or Symbian^3)
+- CLDC 1.1 and MIDP 2.0 API libraries
+- JSR-75 API library
+- `com.nokia.mid.ui` stubs or a Nokia SDK
+- Eclipse SDK with MTJ 2.0.1, or ECJ 4.6.1 for a command-line build
+- JDK capable of running ECJ
+
+Clone the repository and initialize the submodules:
+
 ```
-You will need:
-Any J2ME SDK (e. g WTK, S40 5th, etc)
-Symbian^3 JAR libraries
-JDK 1.5.0
-Last version of Eclipse SDK
-MTJ plugin 2.0.1
+git submodule update --init --recursive
 ```
 
-Clone the repository<br>
+If the submodules are empty, clone them into `lib/json`, `lib/midletintegration`, and `lib/j2mekeyboard`.
 
-Import project from directory in Eclipse SDK<br>
+### Eclipse / MTJ
 
-Open "Application Descriptor" in Package Explorer
-![image](https://user-images.githubusercontent.com/43963888/154848600-b6f30e9c-a412-4771-80bf-527afe11076e.png)<br>
+Import the project from the repository directory in Eclipse.
 
-Click on "Create package"
-![image](https://user-images.githubusercontent.com/43963888/154848614-72752480-b988-40cd-a3c6-9cad1e02d77c.png)<br>
+Open `Application Descriptor` in the Package Explorer, click **Create package**, check **Use deployment directory**, and press **Finish**.
 
-Check the "Use deployment directory"<br>
+To use the **Obfuscate the code** option, configure ProGuard in Eclipse preferences first.
 
-To use "Obfuscate the code" option you must set up proguard in preferences first<br>
+The built JAR and JAD files appear under `<project path>/deployed/S40_5th_Edition_SDK/`.
 
-Then press "Finish"<br>
+### Command line
 
-![image](https://user-images.githubusercontent.com/43963888/154848648-2f054800-b72e-49e6-8b6c-7e3cb6d3c216.png)<br>
+`javac` alone is not enough because the project uses CLDC/MIDP APIs and optional Nokia UI classes. The released package was built with ECJ 4.6.1 using `-source 1.3 -target cldc1.1`.
 
-Builded JAR & JAD files will appear at \<project path\>/deployed/S40_5th_Edition_SDK/
+1. Compile local `com.nokia.mid.ui` stubs (`TextEditor`, `S60TextEditor`, `TextEditorListener`, and `DirectUtils`) into a classes directory.
+2. Compile the app and libraries with the CLDC, MIDP, JSR-75, and stub classes on the bootclasspath.
+3. Package the compiled classes plus the contents of `res/` and `lib/j2mekeyboard/res/` at the JAR root.
+4. Add the manifest attributes from `Application Descriptor` and generate a matching JAD with the correct `MIDlet-Jar-URL` and `MIDlet-Jar-Size`.
+
+The final artifacts are placed in `dist/`.

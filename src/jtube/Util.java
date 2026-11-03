@@ -193,6 +193,42 @@ public class Util implements Constants {
 	}
 	
 	private static HttpConnection open(String url, LoaderThread loader) throws IOException, InterruptedException {
+		HttpConnection hc = null;
+		try {
+			hc = openConnection(url, loader);
+			int r = hc.getResponseCode();
+			int redirects = 0;
+			while ((r == 301 || r == 302 || r == 303 || r == 307 || r == 308)
+					&& hc.getHeaderField("Location") != null) {
+				if (redirects++ > 5) {
+					throw new IOException("Too many redirects!");
+				}
+				String redir = hc.getHeaderField("Location");
+				if (redir.startsWith("/")) {
+					String tmp = url.substring(url.indexOf("//") + 2);
+					String host = url.substring(0, url.indexOf("//")) + "//" + tmp.substring(0, tmp.indexOf("/"));
+					redir = host + redir;
+				}
+				hc.close();
+				hc = null;
+				url = redir;
+				hc = openConnection(url, loader);
+				r = hc.getResponseCode();
+			}
+			if (r >= 401 && r != 500) throw new IOException(r + " " + hc.getResponseMessage());
+			return hc;
+		} catch (IOException e) {
+			if (hc != null) {
+				try {
+					hc.close();
+				} catch (IOException e2) {
+				}
+			}
+			throw e;
+		}
+	}
+
+	private static HttpConnection openConnection(String url, LoaderThread loader) throws IOException, InterruptedException {
 		HttpConnection hc = (HttpConnection) Connector.open(Util.getPlatformSpecificUrl(url));
 		hc.setRequestMethod("GET");
 		hc.setRequestProperty("User-Agent", userAgent);
@@ -211,23 +247,6 @@ public class Util implements Constants {
 		}
 		Thread.sleep(1);
 		synchronized(connectionLock) {}
-		int r = hc.getResponseCode();
-		int redirects = 0;
-		while ((r == 301 || r == 302) && hc.getHeaderField("Location") != null) {
-			if (redirects++ > 5) {
-				throw new IOException("Too many redirects!");
-			}
-			String redir = hc.getHeaderField("Location");
-			if (redir.startsWith("/")) {
-				String tmp = url.substring(url.indexOf("//") + 2);
-				String host = url.substring(0, url.indexOf("//")) + "//" + tmp.substring(0, tmp.indexOf("/"));
-				redir = host + redir;
-			}
-			hc.close();
-			hc = (HttpConnection) Connector.open(Util.getPlatformSpecificUrl(redir));
-			hc.setRequestMethod("GET");
-		}
-		if (r >= 401 && r != 500) throw new IOException(r + " " + hc.getResponseMessage());
 		return hc;
 	}
 
@@ -619,6 +638,8 @@ public class Util implements Constants {
 				} catch (Exception e) {
 					hc.setRequestMethod("GET");
 				}
+				hc.setRequestProperty("User-Agent", userAgent);
+				r = hc.getResponseCode();
 			}
 			return r;
 		} catch (InterruptedException e) {
